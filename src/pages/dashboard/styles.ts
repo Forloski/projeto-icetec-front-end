@@ -20,8 +20,12 @@ export const HeaderContent = styled.div`
 
     svg {
       color: black;
-      width: 20px;
-      height: 20px;
+      width: 30px;
+      height: 30px;
+
+      &:hover {
+        color: red;
+      }
     }
   }
 `;
@@ -45,4 +49,12 @@ export const Profile = styled.div`
   strong {
     color: #009ee2;
   }
+`;
+
+export const Content = styled.div`
+  max-width: 1120px;
+  margin: 64px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;

@@ -1,8 +1,10 @@
 import React, { useCallback, useRef } from "react";
 
 import { FiPower } from "react-icons/fi";
-import { Container, Header, HeaderContent, Profile } from "./styles";
 
+import { Container, Header, HeaderContent, Profile, Content } from "./styles";
+import CandidateListContainer from "../../components/candidateListContainer";
+// import CandidateCreate from "../../components/candidateListContainer/candidateCreate";
 import logo from "../../assets/logo_icetec.svg";
 import { useAuth } from "../../hooks/auth";
 
@@ -25,6 +27,9 @@ const Dashboard: React.FC = () => {
           </button>
         </HeaderContent>
       </Header>
+      <Content>
+        <CandidateListContainer />
+      </Content>
     </Container>
   );
 };
