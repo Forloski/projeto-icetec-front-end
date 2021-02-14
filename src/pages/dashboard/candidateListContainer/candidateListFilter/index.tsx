@@ -64,6 +64,7 @@ const CandidateListFilter: React.FC = () => {
       ? history.push("/dashboard")
       : history.push(`/dashboard?${query}`);
   }, [
+    addToast,
     angular,
     csharp,
     history,
