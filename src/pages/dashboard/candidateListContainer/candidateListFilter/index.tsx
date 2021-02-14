@@ -4,7 +4,9 @@ import queryString from "query-string";
 
 import { FiChevronLeft } from "react-icons/fi";
 
-import Switch from "../../switch";
+import Switch from "../../../../components/switch";
+
+import { useToast } from "../../../../hooks/toast";
 
 import {
   Container,
@@ -20,6 +22,7 @@ interface IFilter {
 
 const CandidateListFilter: React.FC = () => {
   const history = useHistory();
+  const { addToast } = useToast();
 
   const [csharp, setCsharp] = useState<boolean>(false);
   const [javascript, setJavascript] = useState<boolean>(false);
@@ -49,6 +52,13 @@ const CandidateListFilter: React.FC = () => {
     if (laravel) filter.tech.push("laravel");
 
     const query = queryString.stringify(filter);
+
+    addToast({
+      type: "success",
+      title: "Filtro aplicado com sucesso",
+      description:
+        "As informações foram filtradas e podem ser acessadas pela lista.",
+    });
 
     filter.tech.length === 0
       ? history.push("/dashboard")

@@ -5,10 +5,10 @@ import { FiPower } from "react-icons/fi";
 import logo from "../../assets/logo_icetec.svg";
 
 import { Container, Header, HeaderContent, Profile, Content } from "./styles";
-import CandidateListContainer from "../../components/candidateListContainer";
-import CandidateCreate from "../../components/candidateListContainer/candidateCreate";
-import CandidateListFilter from "../../components/candidateListContainer/candidateListFilter";
-import CandidateEdit from "../../components/candidateListContainer/candidateEdit";
+import CandidateListContainer from "./candidateListContainer";
+import CandidateCreate from "./candidateListContainer/candidateCreate";
+import CandidateListFilter from "./candidateListContainer/candidateListFilter";
+import CandidateEdit from "./candidateListContainer/candidateEdit";
 
 import { useAuth } from "../../hooks/auth";
 

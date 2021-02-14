@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { shade } from "polished";
-import Button from "../../button";
+import Button from "../../../../components/button";
 
 export const InputContainer = styled.div`
   animation: fadein 0.4s;

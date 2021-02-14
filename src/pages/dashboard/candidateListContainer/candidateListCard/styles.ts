@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { shade } from "polished";
-import Button from "../../button";
+import Button from "../../../../components/button";
 
 export const Container = styled(Button)`
   position: relative;

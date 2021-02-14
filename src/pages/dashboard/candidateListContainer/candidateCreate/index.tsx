@@ -1,24 +1,18 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
-import { useHistory, useRouteMatch, useLocation } from "react-router-dom";
-
-import {
-  FiMail,
-  FiUser,
-  FiLinkedin,
-  FiChevronLeft,
-  FiTrash2,
-} from "react-icons/fi";
+import React, { useCallback, useRef, useState } from "react";
+import { FiMail, FiUser, FiLinkedin, FiChevronLeft } from "react-icons/fi";
+import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/web";
-import Switch from "../../switch";
-import Input from "../../input";
+import Switch from "../../../../components/switch";
+import Input from "../../../../components/input";
 
-import { ICandidate, useCandidates } from "../../../hooks/candidates";
-import { useToast } from "../../../hooks/toast";
+import { ICandidate, useCandidates } from "../../../../hooks/candidates";
 
-import getValidationError from "../../../utils/getValidationErrors";
+import { useToast } from "../../../../hooks/toast";
+
+import getValidationError from "../../../../utils/getValidationErrors";
 
 import {
   Container,
@@ -27,57 +21,26 @@ import {
   FormContainer,
   CheckboxContainer,
   SwitchContainer,
-  DeleteButton,
   InputContainer,
 } from "./styles";
 
-const CandidateEdit: React.FC = () => {
+const CandidateCreate: React.FC = () => {
   const history = useHistory();
+
+  const [csharp, setCsharp] = useState<boolean>(false);
+  const [javascript, setJavascript] = useState<boolean>(false);
+  const [nodejs, setNodejsl] = useState<boolean>(false);
+  const [angular, setAngular] = useState<boolean>(false);
+  const [react, setReact] = useState<boolean>(false);
+  const [ionic, setIonic] = useState<boolean>(false);
+  const [php, setPhp] = useState<boolean>(false);
+  const [mensageria, setMensageria] = useState<boolean>(false);
+  const [laravel, setLaravel] = useState<boolean>(false);
+
   const formRef = useRef<FormHandles>(null);
-  const match = useRouteMatch();
+
   const { addToast } = useToast();
-  const {
-    deleteCandidate,
-    editCandidate,
-    storeCandidate,
-    readSingle,
-    candidateState,
-  } = useCandidates();
-
-  const { id } = match.params as { id: string };
-
-  useEffect(() => {
-    readSingle(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useLocation()]);
-
-  const [csharp, setCsharp] = useState<boolean>(
-    candidateState.technologies.includes("csharp")
-  );
-  const [javascript, setJavascript] = useState<boolean>(
-    candidateState.technologies.includes("javascript")
-  );
-  const [nodejs, setNodejs] = useState<boolean>(
-    candidateState.technologies.includes("nodejs")
-  );
-  const [angular, setAngular] = useState<boolean>(
-    candidateState.technologies.includes("angular")
-  );
-  const [react, setReact] = useState<boolean>(
-    candidateState.technologies.includes("react")
-  );
-  const [ionic, setIonic] = useState<boolean>(
-    candidateState.technologies.includes("ionic")
-  );
-  const [php, setPhp] = useState<boolean>(
-    candidateState.technologies.includes("php")
-  );
-  const [mensageria, setMensageria] = useState<boolean>(
-    candidateState.technologies.includes("mensageria")
-  );
-  const [laravel, setLaravel] = useState<boolean>(
-    candidateState.technologies.includes("laravel")
-  );
+  const { createCandidate, storeCandidate } = useCandidates();
 
   const handleSubmit = useCallback(
     async (formCandidate: ICandidate) => {
@@ -93,9 +56,6 @@ const CandidateEdit: React.FC = () => {
       if (mensageria) formCandidate.technologies.push("mensageria");
       if (laravel) formCandidate.technologies.push("laravel");
 
-      // eslint-disable-next-line no-param-reassign
-      formCandidate.id = candidateState.id;
-
       try {
         formRef.current?.setErrors({});
 
@@ -109,7 +69,13 @@ const CandidateEdit: React.FC = () => {
         await schema.validate(formCandidate, { abortEarly: false });
 
         storeCandidate(formCandidate);
-        await editCandidate(formCandidate);
+        await createCandidate(formCandidate);
+        addToast({
+          type: "success",
+          title: "Candidato criado com sucesso.",
+          description:
+            "As informações foram salvas e podem ser acessadas pela lista.",
+        });
         history.goBack();
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -122,7 +88,7 @@ const CandidateEdit: React.FC = () => {
           type: "error",
           title: "Erro na Criação de Candidato",
           description:
-            "Ocorreu um erro na edição do candidato, verifique os dados e tente novamente.",
+            "Ocorreu um erro na criação de um candidato, verifique os dados e tente novamente.",
         });
       }
     },
@@ -136,9 +102,8 @@ const CandidateEdit: React.FC = () => {
       php,
       mensageria,
       laravel,
-      candidateState.id,
       storeCandidate,
-      editCandidate,
+      createCandidate,
       history,
       addToast,
     ]
@@ -148,11 +113,6 @@ const CandidateEdit: React.FC = () => {
     history.goBack();
   }, [history]);
 
-  const handleDeleteOnClick = useCallback(async () => {
-    await deleteCandidate(candidateState);
-    history.goBack();
-  }, [candidateState, deleteCandidate, history]);
-
   return (
     <Container>
       <CancelButton
@@ -160,42 +120,20 @@ const CandidateEdit: React.FC = () => {
         icon={FiChevronLeft}
         onClick={handleCancelOnClick}
       />
-
-      <DeleteButton
-        name="delete"
-        icon={FiTrash2}
-        onClick={handleDeleteOnClick}
-      />
       <FormContainer>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <CreateButton type="submit" name="create">
             Salvar
           </CreateButton>
           <InputContainer>
-            <Input
-              name="name"
-              icon={FiUser}
-              placeholder="Nome"
-              defaultValue={candidateState.name}
-            />
-            <Input
-              name="email"
-              icon={FiMail}
-              placeholder="E-mail"
-              defaultValue={candidateState.email}
-            />
+            <Input name="name" icon={FiUser} placeholder="Nome" />
+            <Input name="email" icon={FiMail} placeholder="E-mail" />
             <Input
               name="linkedinUrl"
               icon={FiLinkedin}
               placeholder="URL Linkedin"
-              defaultValue={candidateState.linkedinUrl}
             />
-            <Input
-              type="number"
-              name="age"
-              placeholder="Idade"
-              defaultValue={candidateState.age}
-            />
+            <Input type="number" name="age" placeholder="Idade" />
           </InputContainer>
           <CheckboxContainer>
             <SwitchContainer>
@@ -217,7 +155,7 @@ const CandidateEdit: React.FC = () => {
             <SwitchContainer>
               <Switch
                 checked={nodejs}
-                onClick={() => setNodejs((oldState) => !oldState)}
+                onClick={() => setNodejsl((oldState) => !oldState)}
               />
               <p>NodeJS</p>
             </SwitchContainer>
@@ -276,4 +214,4 @@ const CandidateEdit: React.FC = () => {
   );
 };
 
-export default CandidateEdit;
+export default CandidateCreate;

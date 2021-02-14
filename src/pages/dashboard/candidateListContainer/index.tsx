@@ -9,7 +9,7 @@ import CandidateListCard from "./candidateListCard";
 
 import { Container, CreateButton, FilterButton, ListContainer } from "./styles";
 
-import { useCandidates } from "../../hooks/candidates";
+import { useCandidates } from "../../../hooks/candidates";
 
 const CandidateList: React.FC = () => {
   const { candidatesListState } = useCandidates();

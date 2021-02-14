@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 import { Container } from "./styles";
 
-import defaultAvatar from "../../../assets/default-avatar.png";
+import defaultAvatar from "../../../../assets/default-avatar.png";
 
-import { ICandidate, useCandidates } from "../../../hooks/candidates";
+import { ICandidate, useCandidates } from "../../../../hooks/candidates";
 
 const CandidateListCard: React.FC<ICandidate> = (candidate) => {
   const { storeCandidate } = useCandidates();
