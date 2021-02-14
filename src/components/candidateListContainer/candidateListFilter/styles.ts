@@ -17,7 +17,7 @@ export const Container = styled.div`
   }
 `;
 
-export const CreateButton = styled(Button)`
+export const FilterButton = styled(Button)`
   align-self: flex-start;
   right: 16px;
   top: 0;
@@ -37,26 +37,6 @@ export const CancelButton = styled(Button)`
   height: 44px;
 `;
 
-export const FormContainer = styled.div`
-  width: 420px;
-  height: 470px;
-
-  background: transparent;
-
-  margin-left: 15px;
-  margin-top: 76px;
-
-  align-content: center;
-
-  display: flex;
-  flex-direction: column;
-
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-`;
-
 export const CheckboxContainer = styled.div`
   width: 420px;
   height: 200px;
@@ -65,6 +45,9 @@ export const CheckboxContainer = styled.div`
   flex-wrap: wrap;
   align-content: space-between;
   flex-direction: column;
+
+  margin-top: 76px;
+  margin-left: 30px;
 `;
 
 export const SwitchContainer = styled.div`

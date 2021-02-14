@@ -30,16 +30,14 @@ export const FilterButton = styled(Button)`
   top: 0;
   position: absolute;
 
-  width: 44px;
+  width: 54px;
   height: 44px;
-
-  border-radius: 50%;
-  border: 0;
 
   padding: 0;
 
   svg {
     size: 50px;
+    margin-top: 3px;
   }
 `;
 

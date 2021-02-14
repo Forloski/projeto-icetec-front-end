@@ -1,5 +1,11 @@
 import React, { useCallback, useRef, useState } from "react";
-import { FiMail, FiUser, FiLinkedin, FiChevronLeft } from "react-icons/fi";
+import {
+  FiMail,
+  FiUser,
+  FiLinkedin,
+  FiChevronLeft,
+  FiTrash2,
+} from "react-icons/fi";
 import * as Yup from "yup";
 
 import { FormHandles } from "@unform/core";
@@ -8,7 +14,6 @@ import Switch from "../../switch";
 import Input from "../../input";
 
 import { ICandidate, useCandidates } from "../../../hooks/candidates";
-
 import { useToast } from "../../../hooks/toast";
 import { useDashboardScreen } from "../../../hooks/dashboardScreen";
 
@@ -21,24 +26,48 @@ import {
   FormContainer,
   CheckboxContainer,
   SwitchContainer,
+  DeleteButton,
 } from "./styles";
 
 const CandidateCreate: React.FC = () => {
-  const [csharp, setCsharp] = useState<boolean>(false);
-  const [javascript, setJavascript] = useState<boolean>(false);
-  const [nodejs, setNodejsl] = useState<boolean>(false);
-  const [angular, setAngular] = useState<boolean>(false);
-  const [react, setReact] = useState<boolean>(false);
-  const [ionic, setIonic] = useState<boolean>(false);
-  const [php, setPhp] = useState<boolean>(false);
-  const [mensageria, setMensageria] = useState<boolean>(false);
-  const [laravel, setLaravel] = useState<boolean>(false);
-
   const formRef = useRef<FormHandles>(null);
 
   const { storeDashboardScreen } = useDashboardScreen();
   const { addToast } = useToast();
-  const { createCandidate, storeCandidate } = useCandidates();
+  const {
+    deleteCandidate,
+    editCandidate,
+    storeCandidate,
+    candidateState,
+  } = useCandidates();
+
+  const [csharp, setCsharp] = useState<boolean>(
+    candidateState.technologies.includes("csharp")
+  );
+  const [javascript, setJavascript] = useState<boolean>(
+    candidateState.technologies.includes("javascript")
+  );
+  const [nodejs, setNodejs] = useState<boolean>(
+    candidateState.technologies.includes("nodejs")
+  );
+  const [angular, setAngular] = useState<boolean>(
+    candidateState.technologies.includes("angular")
+  );
+  const [react, setReact] = useState<boolean>(
+    candidateState.technologies.includes("react")
+  );
+  const [ionic, setIonic] = useState<boolean>(
+    candidateState.technologies.includes("ionic")
+  );
+  const [php, setPhp] = useState<boolean>(
+    candidateState.technologies.includes("php")
+  );
+  const [mensageria, setMensageria] = useState<boolean>(
+    candidateState.technologies.includes("mensageria")
+  );
+  const [laravel, setLaravel] = useState<boolean>(
+    candidateState.technologies.includes("laravel")
+  );
 
   const handleSubmit = useCallback(
     async (formCandidate: ICandidate) => {
@@ -54,6 +83,9 @@ const CandidateCreate: React.FC = () => {
       if (mensageria) formCandidate.technologies.push("mensageria");
       if (laravel) formCandidate.technologies.push("laravel");
 
+      // eslint-disable-next-line no-param-reassign
+      formCandidate.id = candidateState.id;
+
       try {
         formRef.current?.setErrors({});
 
@@ -67,7 +99,7 @@ const CandidateCreate: React.FC = () => {
         await schema.validate(formCandidate, { abortEarly: false });
 
         storeCandidate(formCandidate);
-        createCandidate(formCandidate);
+        editCandidate(formCandidate);
         storeDashboardScreen(1);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -80,7 +112,7 @@ const CandidateCreate: React.FC = () => {
           type: "error",
           title: "Erro na Criação de Candidato",
           description:
-            "Ocorreu um erro na criação de um candidato, verifique os dados e tente novamente.",
+            "Ocorreu um erro na edição do candidato, verifique os dados e tente novamente.",
         });
       }
     },
@@ -94,8 +126,9 @@ const CandidateCreate: React.FC = () => {
       php,
       mensageria,
       laravel,
+      candidateState.id,
       storeCandidate,
-      createCandidate,
+      editCandidate,
       storeDashboardScreen,
       addToast,
     ]
@@ -105,6 +138,11 @@ const CandidateCreate: React.FC = () => {
     storeDashboardScreen(1);
   }, [storeDashboardScreen]);
 
+  const handleDeleteOnClick = useCallback(async () => {
+    deleteCandidate(candidateState);
+    storeDashboardScreen(1);
+  }, [candidateState, deleteCandidate, storeDashboardScreen]);
+
   return (
     <Container>
       <CancelButton
@@ -112,19 +150,40 @@ const CandidateCreate: React.FC = () => {
         icon={FiChevronLeft}
         onClick={handleCancelOnClick}
       />
+      <DeleteButton
+        name="delete"
+        icon={FiTrash2}
+        onClick={handleDeleteOnClick}
+      />
       <FormContainer>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <CreateButton type="submit" name="create">
             Salvar
           </CreateButton>
-          <Input name="name" icon={FiUser} placeholder="Nome" />
-          <Input name="email" icon={FiMail} placeholder="E-mail" />
+          <Input
+            name="name"
+            icon={FiUser}
+            placeholder="Nome"
+            defaultValue={candidateState.name}
+          />
+          <Input
+            name="email"
+            icon={FiMail}
+            placeholder="E-mail"
+            defaultValue={candidateState.email}
+          />
           <Input
             name="linkedinUrl"
             icon={FiLinkedin}
             placeholder="URL Linkedin"
+            defaultValue={candidateState.linkedinUrl}
           />
-          <Input type="number" name="age" placeholder="Idade" />
+          <Input
+            type="number"
+            name="age"
+            placeholder="Idade"
+            defaultValue={candidateState.age}
+          />
           <CheckboxContainer>
             <SwitchContainer>
               <Switch
@@ -145,7 +204,7 @@ const CandidateCreate: React.FC = () => {
             <SwitchContainer>
               <Switch
                 checked={nodejs}
-                onClick={() => setNodejsl((oldState) => !oldState)}
+                onClick={() => setNodejs((oldState) => !oldState)}
               />
               <p>NodeJS</p>
             </SwitchContainer>

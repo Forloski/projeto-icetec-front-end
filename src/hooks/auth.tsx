@@ -41,8 +41,6 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const { token, user } = response.data;
 
-    console.log(response.data);
-
     localStorage.setItem("@IceTecTest:token", token);
     localStorage.setItem("@IceTecTest:user", JSON.stringify(user));
 

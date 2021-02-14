@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { shade } from "polished";
 import Button from "../../button";
 
 export const Container = styled.div`
@@ -35,6 +36,22 @@ export const CancelButton = styled(Button)`
 
   width: 54px;
   height: 44px;
+`;
+
+export const DeleteButton = styled(Button)`
+  align-self: flex-start;
+  right: 180px;
+  top: 0;
+  position: absolute;
+
+  width: 54px;
+  height: 44px;
+
+  background-color: red;
+
+  &:hover {
+    background: ${shade(0.2, `red`)};
+  }
 `;
 
 export const FormContainer = styled.div`

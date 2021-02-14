@@ -18,7 +18,7 @@ export const Container = styled(Button)`
   border: 0;
 
   div {
-    width: 310px;
+    width: 300px;
     margin-top: 5px;
   }
 
