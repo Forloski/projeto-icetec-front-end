@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-closing-bracket-location */
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import { FiFilter } from "react-icons/fi";
 
@@ -10,35 +11,29 @@ import { Container, CreateButton, FilterButton, ListContainer } from "./styles";
 
 import { useCandidates } from "../../hooks/candidates";
 
-import { useDashboardScreen } from "../../hooks/dashboardScreen";
-
 const CandidateList: React.FC = () => {
-  const { readAll, candidatesListState } = useCandidates();
-  const { storeDashboardScreen } = useDashboardScreen();
+  const { candidatesListState } = useCandidates();
+  const { readFiltered, readAll } = useCandidates();
 
-  const handleCreateButtonOnClick = useCallback(() => {
-    storeDashboardScreen(2);
-  }, [storeDashboardScreen]);
+  function useQuery() {
+    return new URLSearchParams(useLocation().search).getAll("tech");
+  }
 
-  const handleFilterButtonOnClick = useCallback(() => {
-    storeDashboardScreen(3);
-  }, [storeDashboardScreen]);
+  const query = useQuery();
 
   useEffect(() => {
-    if (candidatesListState.length === 0) readAll();
+    query.length === 0 ? readAll() : readFiltered(query);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [useLocation()]);
 
   return (
     <Container>
-      <CreateButton name="create" onClick={handleCreateButtonOnClick}>
-        Adicionar
-      </CreateButton>
-      <FilterButton
-        name="create"
-        icon={FiFilter}
-        onClick={handleFilterButtonOnClick}
-      />
+      <Link to="dashboard/create">
+        <CreateButton name="create">Adicionar</CreateButton>
+      </Link>
+      <Link to="dashboard/filter">
+        <FilterButton name="create" icon={FiFilter} />
+      </Link>
       <ListContainer>
         {candidatesListState.length === 0
           ? null

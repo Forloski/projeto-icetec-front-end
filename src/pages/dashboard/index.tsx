@@ -1,23 +1,21 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useRouteMatch } from "react-router-dom";
 
 import { FiPower } from "react-icons/fi";
+import logo from "../../assets/logo_icetec.svg";
 
 import { Container, Header, HeaderContent, Profile, Content } from "./styles";
 import CandidateListContainer from "../../components/candidateListContainer";
 import CandidateCreate from "../../components/candidateListContainer/candidateCreate";
 import CandidateListFilter from "../../components/candidateListContainer/candidateListFilter";
 import CandidateEdit from "../../components/candidateListContainer/candidateEdit";
-import logo from "../../assets/logo_icetec.svg";
+
 import { useAuth } from "../../hooks/auth";
-import { useDashboardScreen } from "../../hooks/dashboardScreen";
 
 const Dashboard: React.FC = () => {
   const { signOut, user } = useAuth();
-  const { dashboardScreenState, storeDashboardScreen } = useDashboardScreen();
 
-  useEffect(() => {
-    storeDashboardScreen(1);
-  }, [storeDashboardScreen]);
+  const match = useRouteMatch();
 
   return (
     <Container>
@@ -36,10 +34,10 @@ const Dashboard: React.FC = () => {
         </HeaderContent>
       </Header>
       <Content>
-        {dashboardScreenState === 1 ? <CandidateListContainer /> : null}
-        {dashboardScreenState === 2 ? <CandidateCreate /> : null}
-        {dashboardScreenState === 3 ? <CandidateListFilter /> : null}
-        {dashboardScreenState === 4 ? <CandidateEdit /> : null}
+        {match.path === "/dashboard" ? <CandidateListContainer /> : null}
+        {match.path === "/dashboard/create" ? <CandidateCreate /> : null}
+        {match.path === "/dashboard/filter" ? <CandidateListFilter /> : null}
+        {match.path === "/dashboard/candidate/:id" ? <CandidateEdit /> : null}
       </Content>
     </Container>
   );

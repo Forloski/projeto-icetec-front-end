@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { FiMail, FiUser, FiLinkedin, FiChevronLeft } from "react-icons/fi";
+import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 
 import { FormHandles } from "@unform/core";
@@ -10,7 +11,6 @@ import Input from "../../input";
 import { ICandidate, useCandidates } from "../../../hooks/candidates";
 
 import { useToast } from "../../../hooks/toast";
-import { useDashboardScreen } from "../../../hooks/dashboardScreen";
 
 import getValidationError from "../../../utils/getValidationErrors";
 
@@ -21,9 +21,12 @@ import {
   FormContainer,
   CheckboxContainer,
   SwitchContainer,
+  InputContainer,
 } from "./styles";
 
 const CandidateCreate: React.FC = () => {
+  const history = useHistory();
+
   const [csharp, setCsharp] = useState<boolean>(false);
   const [javascript, setJavascript] = useState<boolean>(false);
   const [nodejs, setNodejsl] = useState<boolean>(false);
@@ -36,7 +39,6 @@ const CandidateCreate: React.FC = () => {
 
   const formRef = useRef<FormHandles>(null);
 
-  const { storeDashboardScreen } = useDashboardScreen();
   const { addToast } = useToast();
   const { createCandidate, storeCandidate } = useCandidates();
 
@@ -67,8 +69,8 @@ const CandidateCreate: React.FC = () => {
         await schema.validate(formCandidate, { abortEarly: false });
 
         storeCandidate(formCandidate);
-        createCandidate(formCandidate);
-        storeDashboardScreen(1);
+        await createCandidate(formCandidate);
+        history.goBack();
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationError(err);
@@ -96,14 +98,14 @@ const CandidateCreate: React.FC = () => {
       laravel,
       storeCandidate,
       createCandidate,
-      storeDashboardScreen,
+      history,
       addToast,
     ]
   );
 
   const handleCancelOnClick = useCallback(async () => {
-    storeDashboardScreen(1);
-  }, [storeDashboardScreen]);
+    history.goBack();
+  }, [history]);
 
   return (
     <Container>
@@ -117,14 +119,16 @@ const CandidateCreate: React.FC = () => {
           <CreateButton type="submit" name="create">
             Salvar
           </CreateButton>
-          <Input name="name" icon={FiUser} placeholder="Nome" />
-          <Input name="email" icon={FiMail} placeholder="E-mail" />
-          <Input
-            name="linkedinUrl"
-            icon={FiLinkedin}
-            placeholder="URL Linkedin"
-          />
-          <Input type="number" name="age" placeholder="Idade" />
+          <InputContainer>
+            <Input name="name" icon={FiUser} placeholder="Nome" />
+            <Input name="email" icon={FiMail} placeholder="E-mail" />
+            <Input
+              name="linkedinUrl"
+              icon={FiLinkedin}
+              placeholder="URL Linkedin"
+            />
+            <Input type="number" name="age" placeholder="Idade" />
+          </InputContainer>
           <CheckboxContainer>
             <SwitchContainer>
               <Switch

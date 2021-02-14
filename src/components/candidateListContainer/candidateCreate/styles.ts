@@ -17,6 +17,19 @@ export const Container = styled.div`
   }
 `;
 
+export const InputContainer = styled.div`
+  animation: fadein 0.4s;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
 export const CreateButton = styled(Button)`
   align-self: flex-start;
   right: 16px;
@@ -65,6 +78,17 @@ export const CheckboxContainer = styled.div`
   flex-wrap: wrap;
   align-content: space-between;
   flex-direction: column;
+
+  animation: fadein 0.4s;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 export const SwitchContainer = styled.div`

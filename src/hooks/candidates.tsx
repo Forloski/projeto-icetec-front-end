@@ -21,6 +21,7 @@ interface ICandidateContextData {
   createCandidate(candidate: ICandidate): Promise<ICandidate>;
   deleteCandidate(candidate: ICandidate): Promise<string>;
   editCandidate(candidate: ICandidate): Promise<string>;
+  readSingle(id: string): void;
 }
 
 const defaultListState: ICandidate[] = [];
@@ -51,6 +52,14 @@ export const CandidateProvider: React.FC = ({ children }) => {
     const candidatesList = response.data;
 
     setCandidatesList(candidatesList);
+  }, []);
+
+  // get a single candidate from database
+  const readSingle = useCallback(async (id: string) => {
+    const response = await api.get<ICandidate>(`candidates/${id}`);
+    const candidate = response.data;
+
+    setCandidate(candidate);
   }, []);
 
   // get list with filtered candidates from database
@@ -104,6 +113,7 @@ export const CandidateProvider: React.FC = ({ children }) => {
         storeCandidate,
         deleteCandidate,
         editCandidate,
+        readSingle,
       }}
     >
       {children}

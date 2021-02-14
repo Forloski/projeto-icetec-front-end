@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
+import { useHistory } from "react-router-dom";
+import queryString from "query-string";
+
 import { FiChevronLeft } from "react-icons/fi";
 
 import Switch from "../../switch";
-
-import { useCandidates } from "../../../hooks/candidates";
-import { useDashboardScreen } from "../../../hooks/dashboardScreen";
 
 import {
   Container,
@@ -14,7 +14,13 @@ import {
   SwitchContainer,
 } from "./styles";
 
-const CandidateCreate: React.FC = () => {
+interface IFilter {
+  tech: string[];
+}
+
+const CandidateListFilter: React.FC = () => {
+  const history = useHistory();
+
   const [csharp, setCsharp] = useState<boolean>(false);
   const [javascript, setJavascript] = useState<boolean>(false);
   const [nodejs, setNodejsl] = useState<boolean>(false);
@@ -25,34 +31,32 @@ const CandidateCreate: React.FC = () => {
   const [mensageria, setMensageria] = useState<boolean>(false);
   const [laravel, setLaravel] = useState<boolean>(false);
 
-  const { storeDashboardScreen } = useDashboardScreen();
-  const { readFiltered } = useCandidates();
-
   const handleCancelOnClick = useCallback(async () => {
-    storeDashboardScreen(1);
-  }, [storeDashboardScreen]);
+    history.goBack();
+  }, [history]);
 
   const handleFilterOnClick = useCallback(async () => {
-    const filter: string[] = [];
+    const filter: IFilter = { tech: [] };
 
-    if (csharp) filter.push("csharp");
-    if (javascript) filter.push("javascript");
-    if (nodejs) filter.push("nodejs");
-    if (angular) filter.push("angular");
-    if (react) filter.push("react");
-    if (ionic) filter.push("ionic");
-    if (php) filter.push("php");
-    if (mensageria) filter.push("mensageria");
-    if (laravel) filter.push("laravel");
+    if (csharp) filter.tech.push("csharp");
+    if (javascript) filter.tech.push("javascript");
+    if (nodejs) filter.tech.push("nodejs");
+    if (angular) filter.tech.push("angular");
+    if (react) filter.tech.push("react");
+    if (ionic) filter.tech.push("ionic");
+    if (php) filter.tech.push("php");
+    if (mensageria) filter.tech.push("mensageria");
+    if (laravel) filter.tech.push("laravel");
 
-    if (filter !== []) {
-      readFiltered(filter);
-    }
+    const query = queryString.stringify(filter);
 
-    storeDashboardScreen(1);
+    filter.tech.length === 0
+      ? history.push("/dashboard")
+      : history.push(`/dashboard?${query}`);
   }, [
     angular,
     csharp,
+    history,
     ionic,
     javascript,
     laravel,
@@ -60,8 +64,6 @@ const CandidateCreate: React.FC = () => {
     nodejs,
     php,
     react,
-    readFiltered,
-    storeDashboardScreen,
   ]);
 
   return (
@@ -151,4 +153,4 @@ const CandidateCreate: React.FC = () => {
   );
 };
 
-export default CandidateCreate;
+export default CandidateListFilter;

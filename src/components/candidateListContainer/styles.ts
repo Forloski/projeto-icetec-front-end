@@ -56,4 +56,15 @@ export const ListContainer = styled.div`
 
   display: flex;
   flex-direction: column;
+
+  animation: fadein 0.4s;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;

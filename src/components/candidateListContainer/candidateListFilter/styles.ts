@@ -48,6 +48,17 @@ export const CheckboxContainer = styled.div`
 
   margin-top: 76px;
   margin-left: 30px;
+
+  animation: fadein 0.4s;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 export const SwitchContainer = styled.div`

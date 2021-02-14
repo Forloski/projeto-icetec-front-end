@@ -1,4 +1,6 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
+import { useHistory, useRouteMatch, useLocation } from "react-router-dom";
+
 import {
   FiMail,
   FiUser,
@@ -15,7 +17,6 @@ import Input from "../../input";
 
 import { ICandidate, useCandidates } from "../../../hooks/candidates";
 import { useToast } from "../../../hooks/toast";
-import { useDashboardScreen } from "../../../hooks/dashboardScreen";
 
 import getValidationError from "../../../utils/getValidationErrors";
 
@@ -27,19 +28,28 @@ import {
   CheckboxContainer,
   SwitchContainer,
   DeleteButton,
+  InputContainer,
 } from "./styles";
 
-const CandidateCreate: React.FC = () => {
+const CandidateEdit: React.FC = () => {
+  const history = useHistory();
   const formRef = useRef<FormHandles>(null);
-
-  const { storeDashboardScreen } = useDashboardScreen();
+  const match = useRouteMatch();
   const { addToast } = useToast();
   const {
     deleteCandidate,
     editCandidate,
     storeCandidate,
+    readSingle,
     candidateState,
   } = useCandidates();
+
+  const { id } = match.params as { id: string };
+
+  useEffect(() => {
+    readSingle(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useLocation()]);
 
   const [csharp, setCsharp] = useState<boolean>(
     candidateState.technologies.includes("csharp")
@@ -99,8 +109,8 @@ const CandidateCreate: React.FC = () => {
         await schema.validate(formCandidate, { abortEarly: false });
 
         storeCandidate(formCandidate);
-        editCandidate(formCandidate);
-        storeDashboardScreen(1);
+        await editCandidate(formCandidate);
+        history.goBack();
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationError(err);
@@ -129,19 +139,19 @@ const CandidateCreate: React.FC = () => {
       candidateState.id,
       storeCandidate,
       editCandidate,
-      storeDashboardScreen,
+      history,
       addToast,
     ]
   );
 
   const handleCancelOnClick = useCallback(async () => {
-    storeDashboardScreen(1);
-  }, [storeDashboardScreen]);
+    history.goBack();
+  }, [history]);
 
   const handleDeleteOnClick = useCallback(async () => {
-    deleteCandidate(candidateState);
-    storeDashboardScreen(1);
-  }, [candidateState, deleteCandidate, storeDashboardScreen]);
+    await deleteCandidate(candidateState);
+    history.goBack();
+  }, [candidateState, deleteCandidate, history]);
 
   return (
     <Container>
@@ -150,6 +160,7 @@ const CandidateCreate: React.FC = () => {
         icon={FiChevronLeft}
         onClick={handleCancelOnClick}
       />
+
       <DeleteButton
         name="delete"
         icon={FiTrash2}
@@ -160,30 +171,32 @@ const CandidateCreate: React.FC = () => {
           <CreateButton type="submit" name="create">
             Salvar
           </CreateButton>
-          <Input
-            name="name"
-            icon={FiUser}
-            placeholder="Nome"
-            defaultValue={candidateState.name}
-          />
-          <Input
-            name="email"
-            icon={FiMail}
-            placeholder="E-mail"
-            defaultValue={candidateState.email}
-          />
-          <Input
-            name="linkedinUrl"
-            icon={FiLinkedin}
-            placeholder="URL Linkedin"
-            defaultValue={candidateState.linkedinUrl}
-          />
-          <Input
-            type="number"
-            name="age"
-            placeholder="Idade"
-            defaultValue={candidateState.age}
-          />
+          <InputContainer>
+            <Input
+              name="name"
+              icon={FiUser}
+              placeholder="Nome"
+              defaultValue={candidateState.name}
+            />
+            <Input
+              name="email"
+              icon={FiMail}
+              placeholder="E-mail"
+              defaultValue={candidateState.email}
+            />
+            <Input
+              name="linkedinUrl"
+              icon={FiLinkedin}
+              placeholder="URL Linkedin"
+              defaultValue={candidateState.linkedinUrl}
+            />
+            <Input
+              type="number"
+              name="age"
+              placeholder="Idade"
+              defaultValue={candidateState.age}
+            />
+          </InputContainer>
           <CheckboxContainer>
             <SwitchContainer>
               <Switch
@@ -263,4 +276,4 @@ const CandidateCreate: React.FC = () => {
   );
 };
 
-export default CandidateCreate;
+export default CandidateEdit;
